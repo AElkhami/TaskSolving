@@ -23,7 +23,7 @@ public interface MainContract {
      * while the setDataToRecyclerView and onResponseFailure is fetched from the InteractorImpl class
      **/
 
-    interface MainView extends BasePresenterListener {
+    interface MainView extends BasePresenterListener{
 
         @Override
         void showProgress();

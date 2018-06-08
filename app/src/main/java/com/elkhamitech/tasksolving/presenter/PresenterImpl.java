@@ -37,6 +37,7 @@ public class PresenterImpl extends BasePresenter implements MainContract.Present
     @Override
     public void onRequestData() {
         interactor.getFoodList(this);
+        mainView.showProgress();
     }
 
     @Override
@@ -52,10 +53,9 @@ public class PresenterImpl extends BasePresenter implements MainContract.Present
     @Override
     public void onFailure(Throwable throwable) {
 
-        if(mainView == null){
+        if(mainView != null){
             mainView.onResponseFailure(throwable);
             mainView.hideProgress();
         }
-
     }
 }

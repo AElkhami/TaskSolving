@@ -32,7 +32,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         
         initUI();
 
-        presenter = new PresenterImpl(this,this, new InteractorImpl());
+        presenter = new PresenterImpl(MainActivity.this,MainActivity.this, new InteractorImpl());
         presenter.onRequestData();
 
     }

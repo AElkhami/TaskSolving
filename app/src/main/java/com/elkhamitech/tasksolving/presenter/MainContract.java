@@ -13,7 +13,7 @@ public interface MainContract {
 
     interface Presenter{
         void onDestroy();
-        void onRefresh();
+        boolean onRefreshData();
         void onRequestData();
 
     }
@@ -30,6 +30,7 @@ public interface MainContract {
 
         @Override
         void hideProgress();
+
 
         void setDataToRecyclerView(List<Food> foodList);
         void onResponseFailure(Throwable throwable);

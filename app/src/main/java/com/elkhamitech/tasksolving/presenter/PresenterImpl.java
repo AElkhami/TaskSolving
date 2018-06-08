@@ -25,12 +25,14 @@ public class PresenterImpl extends BasePresenter implements MainContract.Present
     }
 
     @Override
-    public void onRefresh() {
+    public boolean onRefreshData() {
 
         if(mainView != null){
             mainView.showProgress();
         }
         interactor.getFoodList(this);
+
+        return false;
 
     }
 

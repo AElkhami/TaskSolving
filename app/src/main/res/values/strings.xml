@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">SampleTask</string>
-    <string name="pleasewait">Please Wait</string>
+    <string name="please_wait">Please Wait ...</string>
     <string name="time_stamp">Time Stamp</string>
+    <string name="item_name">Name</string>
+    <string name="item_desc">Desc</string>
+    <string name="item_cost">Cost</string>
+    <string name="image_desc">Image Desc</string>
 </resources>

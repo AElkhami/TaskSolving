@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SampleTask</string>
+    <string name="pleasewait">Please Wait</string>
+    <string name="time_stamp">Time Stamp</string>
+</resources>

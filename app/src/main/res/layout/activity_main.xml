@@ -2,10 +2,10 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.elkhamitech.tasksolving.ui.MainActivity"
-    android:id="@+id/constraint_layout">
+    tools:context="com.elkhamitech.tasksolving.ui.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -20,31 +20,37 @@
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize">
 
-            <TextView
-                android:id="@+id/app_name_textView"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:gravity="start"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_medium"/>
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/time_stamp_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/time_stamp"
-                android:textColor="@android:color/white"
-                android:layout_marginEnd="@dimen/default_margin"/>
+                <TextView
+                    android:id="@+id/app_name_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:text="@string/app_name"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_size_medium" />
 
+                <TextView
+                    android:id="@+id/time_stamp_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/default_margin"
+                    android:gravity="end"
+                    android:text="@string/time_stamp"
+                    android:textColor="@android:color/white" />
+
+
+            </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -53,12 +59,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/food_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
 
-    </android.support.v7.widget.RecyclerView>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/food_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </FrameLayout>
+
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

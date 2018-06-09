@@ -1,9 +1,10 @@
 package com.elkhamitech.tasksolving.presenter;
 
+import android.content.Context;
+
 import com.elkhamitech.tasksolving.bases.BasePresenter;
 import com.elkhamitech.tasksolving.bases.BasePresenterListener;
 import com.elkhamitech.tasksolving.data.model.Food;
-
 
 import java.util.List;
 
@@ -25,20 +26,20 @@ public class PresenterImpl extends BasePresenter implements MainContract.Present
     }
 
     @Override
-    public boolean onRefreshData() {
+    public boolean onRefreshData(Context context) {
 
         if(mainView != null){
             mainView.showProgress();
         }
-        interactor.getFoodList(this);
+        interactor.getFoodList(this,context);
 
         return false;
 
     }
 
     @Override
-    public void onRequestData() {
-        interactor.getFoodList(this);
+    public void onRequestData(Context context) {
+        interactor.getFoodList(this,context);
         mainView.showProgress();
     }
 

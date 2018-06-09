@@ -19,6 +19,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
     private Context context;
     private List<Food> foodList = new ArrayList<>();
+    public boolean viewSwitchedFlag = true;
 
 
     public FoodAdapter(Context context, List<Food> foodList) {
@@ -46,7 +47,10 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     @NonNull
     @Override
     public FoodAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.food_list_item,parent,false);
+        View view;
+
+        view = LayoutInflater.from(parent.getContext()).inflate(viewSwitchedFlag ? R.layout.food_list_item : R.layout.food_grid_item,parent,false);
+
         context = parent.getContext();
         return new ViewHolder(view);
     }
@@ -59,7 +63,12 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         int id = foodModel.getId();
 
         holder.nameText.setText(foodModel.getName());
-        holder.descText.setText(foodModel.getDescription());
+
+        if (viewSwitchedFlag) {
+            holder.descText.setText(foodModel.getDescription());
+        } else {
+
+        }
         holder.coastText.setText(String.format("%s $", String.valueOf(foodModel.getCost())));
 
     }

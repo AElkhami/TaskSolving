@@ -40,7 +40,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
     public void showProgress() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage(getString(R.string.pleasewait));
+            progressDialog.setMessage(getString(R.string.please_wait));
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
 
@@ -60,5 +60,14 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
         tv.setTextColor(Color.WHITE);
         snackbar.show();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        if (progressDialog!=null && progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
     }
 }

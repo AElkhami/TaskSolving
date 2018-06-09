@@ -1,6 +1,6 @@
 package com.elkhamitech.tasksolving.presenter;
 
-import android.util.Log;
+import android.content.Context;
 
 import com.elkhamitech.tasksolving.data.FoodAPI;
 import com.elkhamitech.tasksolving.data.RetrofitService;
@@ -14,17 +14,14 @@ public class InteractorImpl implements MainContract.Interactor {
 
 
     @Override
-    public void getFoodList(final OnFinishedListener onFinishedListener) {
+    public void getFoodList(final OnFinishedListener onFinishedListener, Context context) {
 
         /** Create handle for the RetrofitService interface*/
-        FoodAPI foodAPI = RetrofitService.getRetrofitInstance().create(FoodAPI.class);
+        FoodAPI foodAPI = RetrofitService.getRetrofitInstance(context).create(FoodAPI.class);
 
         /** Call the method with parameter in the interface to get the data*/
 
         Call<FoodResponse> call = foodAPI.getFoodData();
-
-        /**Log the URL called*/
-        Log.wtf("URL Called", call.request().url() + "");
 
         call.enqueue(new Callback<FoodResponse>() {
             @Override

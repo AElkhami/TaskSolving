@@ -1,5 +1,7 @@
 package com.elkhamitech.tasksolving.presenter;
 
+import android.content.Context;
+
 import com.elkhamitech.tasksolving.bases.BasePresenterListener;
 import com.elkhamitech.tasksolving.data.model.Food;
 
@@ -13,8 +15,8 @@ public interface MainContract {
 
     interface Presenter{
         void onDestroy();
-        boolean onRefreshData();
-        void onRequestData();
+        boolean onRefreshData(Context context);
+        void onRequestData(Context context);
 
     }
 
@@ -47,7 +49,7 @@ public interface MainContract {
             void onFailure(Throwable throwable);
         }
 
-        void getFoodList(OnFinishedListener onFinishedListener);
+        void getFoodList(OnFinishedListener onFinishedListener, Context context);
 
     }
 

@@ -27,7 +27,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends
             if (getActivity() == null) return;
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage(getResources().getString(
-                    R.string.pleasewait));
+                    R.string.please_wait));
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
 

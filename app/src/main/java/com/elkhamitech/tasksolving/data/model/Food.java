@@ -13,7 +13,7 @@ public class Food {
     private String name;
 
     @Element(name = "cost")
-    private int cost;
+    private String  cost;
 
     @Element(name = "description")
     private String description;
@@ -37,11 +37,11 @@ public class Food {
         this.name = name;
     }
 
-    public int getCost() {
+    public String getCost() {
         return cost;
     }
 
-    public void setCost(int cost) {
+    public void setCost(String cost) {
         this.cost = cost;
     }
 

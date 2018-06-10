@@ -1,9 +1,14 @@
 <resources>
-    <string name="app_name">SampleTask</string>
-    <string name="please_wait">Please Wait ...</string>
+    <string name="app_name">Menu App</string>
+    <string name="please_wait">Please Wait …</string>
     <string name="time_stamp">Time Stamp</string>
     <string name="item_name">Name</string>
     <string name="item_desc">Desc</string>
     <string name="item_cost">Cost</string>
     <string name="image_desc">Image Desc</string>
+    <string name="switch_menu">Switch</string>
+    <string name="refresh_menu">Refresh</string>
+    <string name="sort_menu">Sort</string>
+    <string name="sort_from_a_to_z">Sort from A to Z</string>
+    <string name="sort_by_price_lower">Sort by price(Lower)</string>
 </resources>

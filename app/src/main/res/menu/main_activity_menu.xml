@@ -3,13 +3,35 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/swtich"
-        android:icon="@drawable/ic_grid_list"
-        android:title="Switch"
-        app:showAsAction="always" />
+        android:id="@+id/sort_list_menu"
+        android:icon="@drawable/ic_sort"
+        android:title="@string/sort_menu"
+        app:showAsAction="ifRoom">
+
+        <menu>
+        <item
+            android:id="@+id/sort_alf_list_menu"
+            android:icon="@drawable/ic_sort_alfa"
+            android:title="@string/sort_from_a_to_z"
+             />
+        <item
+            android:id="@+id/sort_num_list_menu"
+            android:icon="@drawable/ic_sort_num"
+            android:title="@string/sort_by_price_lower"
+            />
+        </menu>
+
+    </item>
+
     <item
-        android:id="@+id/refresh_list"
+        android:id="@+id/swtich_list_menu"
+        android:icon="@drawable/ic_grid_list"
+        android:title="@string/switch_menu"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/refresh_list_menu"
         android:icon="@drawable/ic_refresh"
-        android:title="Refresh"
+        android:title="@string/refresh_menu"
         app:showAsAction="always" />
 </menu>

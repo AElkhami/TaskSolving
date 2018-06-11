@@ -1,5 +1,6 @@
 package com.elkhamitech.tasksolving.ui;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -261,8 +262,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
     }
 
     public void goToCapture(View view) {
-//        Intent goTo = new Intent(MainActivity.this, Main2Activity.class);
-//        startActivity(goTo);
+        Intent goTo = new Intent(MainActivity.this, ImageCaptureActivity.class);
+        startActivity(goTo);
     }
 
     private void setRecyclerViewScrollListener(){

@@ -1,5 +1,6 @@
 package com.elkhamitech.tasksolving.ui;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -23,6 +24,7 @@ import com.elkhamitech.tasksolving.data.model.Food;
 import com.elkhamitech.tasksolving.presenter.InteractorImpl;
 import com.elkhamitech.tasksolving.presenter.MainContract;
 import com.elkhamitech.tasksolving.presenter.PresenterImpl;
+import com.elkhamitech.tasksolving.presenter.Utils;
 import com.etisalat.sampletask.R;
 
 import java.text.DateFormat;
@@ -44,6 +46,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
     private List<Food> foodList;
     private boolean viewSwitchedFlag = true;
     private FloatingActionButton takePhotoFab;
+    private static final String SHARED_PREFERENCES = "MyPrefsFile";
+    private SharedPreferences.Editor editor;
+    private SharedPreferences prefs;
 
 
     @Override
@@ -71,6 +76,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        editor = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
+        prefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
 
         constraintLayout = findViewById(R.id.constraint_layout);
         lastUpdated = findViewById(R.id.time_stamp_textView);
@@ -89,17 +96,34 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         String currentDateTimeString;
         Calendar mDate = Calendar.getInstance();
 
-        //compare if the last updated is today.
-        if (DateUtils.isToday(mDate.getTimeInMillis())) {
+        //check for the network
+        if (Utils.isNetworkAvailable(MainActivity.this)) {
+            //compare if the last updated is today.
+            if (DateUtils.isToday(mDate.getTimeInMillis())) {
 
-            currentDateTimeString = DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date());
-            lastUpdated.setText("last updated today, " + currentDateTimeString);
+                currentDateTimeString = DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date());
+                lastUpdated.setText("last updated today, " + currentDateTimeString);
 
+            } else {
+
+                currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+                lastUpdated.setText(currentDateTimeString);
+            }
+
+            editor.putString("lastUpd", lastUpdated.getText().toString());
+            editor.apply();
         } else {
 
-            currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-            lastUpdated.setText(currentDateTimeString);
+            String restoredText = prefs.getString("lastUpd", null);
+            if (restoredText != null) {
+                restoredText =prefs.getString("lastUpd", "");
+                lastUpdated.setText(restoredText);
+            }
+
         }
+
+
+
 
 
     }
@@ -110,6 +134,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
             public void onRefresh() {
                 //refresh data while return if the refresh is done.
                 swipeLayout.setRefreshing(presenter.onRefreshData(MainActivity.this));
+                setLastUpdated();
 
             }
         });
@@ -175,7 +200,9 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
 
                 return true;
             case R.id.swtich_list_menu:
+
                 switchView();
+
                 return true;
 
             case R.id.sort_alf_list_menu:
@@ -234,7 +261,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
     }
 
     public void goToCapture(View view) {
-
+//        Intent goTo = new Intent(MainActivity.this, Main2Activity.class);
+//        startActivity(goTo);
     }
 
     private void setRecyclerViewScrollListener(){

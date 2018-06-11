@@ -19,8 +19,7 @@ public class RetrofitService {
     private static Retrofit retrofit;
     private static final String BASE_URL = "https://api.androidhive.info/pizza/?format=xml";
 
-    public static Retrofit getRetrofitInstance(final Context context){
-
+    public static OkHttpClient getOkHttpClient(final Context context){
         //implementing cache logic
         OkHttpClient client = new OkHttpClient
                 .Builder()
@@ -41,11 +40,16 @@ public class RetrofitService {
                 })
                 .build();
 
+        return client;
+    }
+
+    public static Retrofit getRetrofitInstance(final Context context){
+
         //initialising retrofit
         if(retrofit == null){
             retrofit = new retrofit2.Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .client(client)
+                    .client(getOkHttpClient(context))
                     .addConverterFactory(SimpleXmlConverterFactory.create())
                     .build();
         }

@@ -8,13 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.elkhamitech.tasksolving.bases.BaseControllerListener;
 import com.elkhamitech.tasksolving.data.model.Food;
 import com.etisalat.sampletask.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
+public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> implements BaseControllerListener {
 
     private Context context;
     private List<Food> foodList = new ArrayList<>();

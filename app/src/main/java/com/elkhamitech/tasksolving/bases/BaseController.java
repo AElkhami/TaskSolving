@@ -7,4 +7,7 @@ public abstract class BaseController<T extends BaseControllerListener> {
     public BaseController(T listener) {
         this.listener = listener;
     }
+    public BaseController() {
+
+    }
 }

@@ -18,8 +18,7 @@
         android:layout_marginRight="@dimen/card_view_margin"
         android:layout_marginBottom="@dimen/card_view_margin"
         card_view:cardCornerRadius="3dp"
-        card_view:cardElevation="3dp"
-        android:elevation="3dp">
+        card_view:cardElevation="3dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -34,10 +33,13 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/image_desc"
+            android:src="@drawable/ic_image"
+            android:background="@android:color/darker_gray"
+            android:scaleType="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:color/darker_gray" />
+             />
 
         <TextView
             android:id="@+id/name_textView"

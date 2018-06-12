@@ -10,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +42,7 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActivity().invalidateOptionsMenu();
         setHasOptionsMenu(true);
 
         CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsingToolbar);
@@ -79,6 +82,17 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
         {
             // Not fully expanded or collapsed
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem sortItem = menu.findItem(R.id.sort_list_menu);
+        MenuItem switchItem = menu.findItem(R.id.swtich_list_menu);
+        MenuItem refreshItem = menu.findItem(R.id.refresh_list_menu);
+        sortItem.setVisible(false);
+        switchItem.setVisible(false);
+        refreshItem.setVisible(false);
     }
 
     @Override

@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraint_layout"
+    android:id="@+id/fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context="com.elkhamitech.tasksolving.ui.MainActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/constraint_layout">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -63,7 +67,7 @@
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -75,7 +79,7 @@
 
             </android.support.v7.widget.RecyclerView>
 
-        </LinearLayout>
+        </FrameLayout>
 
 
     </android.support.v4.widget.SwipeRefreshLayout>
@@ -91,4 +95,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout >
+
+
+</FrameLayout>

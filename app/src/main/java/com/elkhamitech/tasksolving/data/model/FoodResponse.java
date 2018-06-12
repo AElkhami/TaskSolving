@@ -1,13 +1,10 @@
 package com.elkhamitech.tasksolving.data.model;
 
-import com.elkhamitech.tasksolving.bases.BaseController;
-import com.elkhamitech.tasksolving.bases.BaseControllerListener;
-
 import org.simpleframework.xml.ElementList;
 
 import java.util.List;
 
-public class FoodResponse extends BaseController{
+public class FoodResponse {
 
     @ElementList(inline = true)
     private List<Food> foodList;
@@ -15,11 +12,6 @@ public class FoodResponse extends BaseController{
     public FoodResponse(){
 
     }
-
-    public FoodResponse(BaseControllerListener listener) {
-        super(listener);
-    }
-
 
     public List<Food> getFoodList() {
 

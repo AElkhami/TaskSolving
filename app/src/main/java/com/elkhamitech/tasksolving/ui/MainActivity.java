@@ -117,19 +117,16 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
 
             String restoredText = prefs.getString("lastUpd", null);
             if (restoredText != null) {
-                restoredText =prefs.getString("lastUpd", "");
+                restoredText = prefs.getString("lastUpd", "");
                 lastUpdated.setText(restoredText);
             }
 
         }
 
 
-
-
-
     }
 
-    private void refreshList(){
+    private void refreshList() {
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -171,11 +168,36 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
     @Override
     public void setDataToRecyclerView(List<Food> foodList) {
 
-        adapter = new FoodAdapter(this, foodList,viewSwitchedFlag);
+        adapter = new FoodAdapter(this, foodList, viewSwitchedFlag, recyclerItemClickListener);
         recyclerView.setAdapter(adapter);
         this.foodList = foodList;
 
     }
+
+    /**
+     * RecyclerItem click event listener
+     */
+    private RecyclerItemClickListener recyclerItemClickListener = new RecyclerItemClickListener() {
+        @Override
+        public void onItemClick(Food food) {
+
+            DetailsFragment detailsFragment = new DetailsFragment();
+
+            android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
+            android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
+            transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down);
+            transaction.replace(R.id.fragment_container, detailsFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("meal_name", food.getName());
+            bundle.putString("meal_desc", food.getDescription());
+            bundle.putInt("meal_id",food.getId());
+            // set MyFragment Arguments
+            detailsFragment.setArguments(bundle);
+        }
+    };
 
     @Override
     public void onResponseFailure(Throwable throwable) {
@@ -241,12 +263,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
     }
 
 
-    private void switchView(){
+    private void switchView() {
 
         viewSwitchedFlag = !viewSwitchedFlag;
         adapter.viewSwitchedFlag = !adapter.viewSwitchedFlag;
 
-        menu.getItem(1).setIcon(ContextCompat.getDrawable(this,viewSwitchedFlag ? R.drawable.ic_grid_list : R.drawable.ic_linear_list));
+        menu.getItem(1).setIcon(ContextCompat.getDrawable(this, viewSwitchedFlag ? R.drawable.ic_grid_list : R.drawable.ic_linear_list));
 
         recyclerView.setLayoutManager(viewSwitchedFlag ? new LinearLayoutManager(this) : new GridLayoutManager(this, 2));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -266,7 +288,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         startActivity(goTo);
     }
 
-    private void setRecyclerViewScrollListener(){
+    private void setRecyclerViewScrollListener() {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

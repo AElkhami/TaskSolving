@@ -11,4 +11,7 @@
     <string name="sort_menu">Sort</string>
     <string name="sort_from_a_to_z">Sort from A to Z</string>
     <string name="sort_by_price_lower">Sort by price(Lower)</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

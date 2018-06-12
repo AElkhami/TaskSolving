@@ -1,10 +1,12 @@
 package com.elkhamitech.tasksolving.data.model;
 
+import com.elkhamitech.tasksolving.bases.BaseController;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 @Root(name = "item")
-public class Food {
+public class Food extends BaseController {
 
     @Element(name = "id")
     private int id;

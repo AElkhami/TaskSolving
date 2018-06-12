@@ -1,12 +1,14 @@
 package com.elkhamitech.tasksolving.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.elkhamitech.tasksolving.bases.BaseControllerListener;
 import com.elkhamitech.tasksolving.data.model.Food;
@@ -20,16 +22,18 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> im
     private Context context;
     private List<Food> foodList = new ArrayList<>();
     public boolean viewSwitchedFlag;
+    private RecyclerItemClickListener recyclerItemClickListener;
 
-
-    public FoodAdapter(Context context, List<Food> foodList, boolean viewSwitchedFlag) {
+    public FoodAdapter(Context context, List<Food> foodList, boolean viewSwitchedFlag,RecyclerItemClickListener recyclerItemClickListener) {
         this.context = context;
         this.foodList = foodList;
         this.viewSwitchedFlag = viewSwitchedFlag;
+        this.recyclerItemClickListener = recyclerItemClickListener;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private int id;
         private TextView nameText;
         private TextView descText;
         private TextView coastText;
@@ -45,7 +49,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> im
 
         @Override
         public void onClick(View view) {
-
+            context.startActivity(new Intent(context, DetailsFragment.class));
+            Toast.makeText(context, String.valueOf(id), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -61,11 +66,11 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> im
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FoodAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final FoodAdapter.ViewHolder holder, final int position) {
 
         Food foodModel = foodList.get(position);
 
-        int id = foodModel.getId();
+        holder.id = foodModel.getId();
 
         holder.nameText.setText(foodModel.getName());
 
@@ -76,6 +81,12 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> im
         }
         holder.coastText.setText(String.format("%s $", String.valueOf(foodModel.getCost())));
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerItemClickListener.onItemClick(foodList.get(position));
+            }
+        });
 
     }
 

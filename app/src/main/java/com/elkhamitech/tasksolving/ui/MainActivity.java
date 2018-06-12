@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -50,6 +51,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
     private static final String SHARED_PREFERENCES = "MyPrefsFile";
     private SharedPreferences.Editor editor;
     private SharedPreferences prefs;
+    private  DetailsFragment detailsFragment;
 
 
     @Override
@@ -181,23 +183,30 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         @Override
         public void onItemClick(Food food) {
 
-            DetailsFragment detailsFragment = new DetailsFragment();
+            detailsFragment = new DetailsFragment();
 
             android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
+
             transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down);
             transaction.replace(R.id.fragment_container, detailsFragment);
             transaction.addToBackStack(null);
             transaction.commit();
 
-            Bundle bundle = new Bundle();
-            bundle.putString("meal_name", food.getName());
-            bundle.putString("meal_desc", food.getDescription());
-            bundle.putInt("meal_id",food.getId());
-            // set MyFragment Arguments
-            detailsFragment.setArguments(bundle);
+            sendDataToFragment(food);
+
         }
     };
+
+    private void sendDataToFragment(Food food) {
+        Bundle bundle = new Bundle();
+        bundle.putString("meal_name", food.getName());
+        bundle.putString("meal_desc", food.getDescription());
+        bundle.putInt("meal_id",food.getId());
+        bundle.putString("meal_price", food.getCost());
+        // set MyFragment Arguments
+        detailsFragment.setArguments(bundle);
+    }
 
     @Override
     public void onResponseFailure(Throwable throwable) {
@@ -229,13 +238,17 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
                 return true;
 
             case R.id.sort_alf_list_menu:
+
                 sortAlfa(foodList);
                 adapter.notifyDataSetChanged();
+
                 return true;
 
             case R.id.sort_num_list_menu:
+
                 sortNumeric(foodList);
                 adapter.notifyDataSetChanged();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -273,8 +286,8 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         recyclerView.setLayoutManager(viewSwitchedFlag ? new LinearLayoutManager(this) : new GridLayoutManager(this, 2));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
 
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -302,5 +315,19 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (!(fragment instanceof OnBackPressedListener) || !((OnBackPressedListener) fragment).onBackPressed()) {
+            //fragment back pressed
+            super.onBackPressed();
+
+        }else {
+            //activity back pressed
+            super.onBackPressed();
+        }
+
     }
 }

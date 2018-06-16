@@ -32,6 +32,10 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
 
     private boolean isPressed = true;
     private CardView cvSwipeDismiss;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private TextView mealDesc;
+    private TextView meanPrice;
+    private ImageView mealImage;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -44,6 +48,15 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_details, container, false);
+
+        initUI(view);
+        getDataFromActivity();
+
+        return view;
+    }
+
+
+    private void initUI(View view) {
         Toolbar toolbar = view.findViewById(R.id.details_toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -51,12 +64,14 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
         getActivity().invalidateOptionsMenu();
         setHasOptionsMenu(true);
 
-        CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsingToolbar);
-        TextView mealDesc = view.findViewById(R.id.meal_dec_textView);
-        TextView meanPrice = view.findViewById(R.id.meal_price_textView);
-        ImageView mealImage = view.findViewById(R.id.toolbarImage);
 
+        collapsingToolbarLayout = view.findViewById(R.id.collapsingToolbar);
+        mealDesc = view.findViewById(R.id.meal_dec_textView);
+        meanPrice = view.findViewById(R.id.meal_price_textView);
+        mealImage = view.findViewById(R.id.toolbarImage);
+    }
 
+    private void getDataFromActivity() {
         if (getArguments() != null) {
             collapsingToolbarLayout.setTitleEnabled(true);
             collapsingToolbarLayout.setTitle(getArguments().getString("meal_name"));
@@ -64,9 +79,6 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
             meanPrice.setText(String.format("Price %s $",getArguments().getString("meal_price")));
             int mealId = getArguments().getInt("meal_id_desc");
         }
-
-
-        return view;
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -82,6 +94,7 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
 
     }
 
+    //swipe to dissmiss impmentaion (NOT DONE YET)
     @Override
     protected BasePresenter setupPresenter() {
         return null;
@@ -117,14 +130,6 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        MenuItem sortItem = menu.findItem(R.id.sort_list_menu);
-        MenuItem switchItem = menu.findItem(R.id.swtich_list_menu);
-        MenuItem refreshItem = menu.findItem(R.id.refresh_list_menu);
-
-        sortItem.setVisible(false);
-        switchItem.setVisible(false);
-        refreshItem.setVisible(false);
-
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -132,6 +137,7 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
+            //on up button pressed
             case android.R.id.home:
                 if (getFragmentManager() != null) {
 //                    getFragmentManager().popBackStack();
@@ -139,6 +145,8 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
                             .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down)
                             .remove(this)
                             .commit();
+                    //refresh the host activity's toolBar when closing the fragment
+                    ((MainActivity)getActivity()).refreshToolBar();
                 }
                 return true;
 
@@ -146,6 +154,21 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem sortItem = menu.findItem(R.id.sort_list_menu);
+        MenuItem switchLinearItem = menu.findItem(R.id.swtich_list_menu);
+        MenuItem switchGridItem = menu.findItem(R.id.swtich_grid_menu);
+        MenuItem refreshItem = menu.findItem(R.id.refresh_list_menu);
+
+        //hide all Activity menu items to not be shown in the fragment
+        sortItem.setVisible(false);
+        switchLinearItem.setVisible(false);
+        switchGridItem.setVisible(false);
+        refreshItem.setVisible(false);
+    }
 
     @Override
     public boolean onBackPressed() {
@@ -155,6 +178,9 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
                         .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down)
                         .remove(this)
                         .commit();
+
+                //refresh the host activity's toolBar when closing the fragment
+                ((MainActivity)getActivity()).refreshToolBar();
             }
             return true;
         } else {

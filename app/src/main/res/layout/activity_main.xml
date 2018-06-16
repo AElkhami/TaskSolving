@@ -44,10 +44,9 @@
                     android:id="@+id/time_stamp_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/default_margin"
-                    android:gravity="end"
+                    android:gravity="start"
                     android:text="@string/time_stamp"
-                    android:textSize="@dimen/text_size_small"
+                    android:textSize="@dimen/text_size_extra_small"
                     android:textColor="@android:color/white" />
 
 

@@ -23,7 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.elkhamitech.tasksolving.ui.ImageCaptureActivity"></activity>
+        <activity android:name="com.elkhamitech.tasksolving.ui.ImageCaptureActivity"
+            android:parentActivityName="com.elkhamitech.tasksolving.ui.MainActivity"></activity>
     </application>
 
 </manifest>

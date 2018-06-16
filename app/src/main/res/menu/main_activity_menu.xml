@@ -24,10 +24,16 @@
     </item>
 
     <item
-        android:id="@+id/swtich_list_menu"
+        android:id="@+id/swtich_grid_menu"
         android:icon="@drawable/ic_grid_list"
-        android:title="@string/switch_menu"
-        app:showAsAction="ifRoom" />
+        android:title="Grid View"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/swtich_list_menu"
+        android:icon="@drawable/ic_linear_list"
+        android:title="Linear View"
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/refresh_list_menu"

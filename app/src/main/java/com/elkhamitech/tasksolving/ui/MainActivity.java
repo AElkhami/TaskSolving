@@ -51,7 +51,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
     private static final String SHARED_PREFERENCES = "MyPrefsFile";
     private SharedPreferences.Editor editor;
     private SharedPreferences prefs;
-    private  DetailsFragment detailsFragment;
+    private DetailsFragment detailsFragment;;
 
 
     @Override
@@ -59,6 +59,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initToolBar();
         initUI();
 
         presenter = new PresenterImpl(MainActivity.this, MainActivity.this, new InteractorImpl());
@@ -74,10 +75,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
      * Initialise UI Components
      */
     private void initUI() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         editor = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
         prefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
@@ -92,6 +89,15 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        viewSwitchedFlag = prefs.getBoolean("selectedView", true);
+    }
+
+    private void initToolBar() {
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
     }
 
@@ -174,7 +180,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         recyclerView.setAdapter(adapter);
         this.foodList = foodList;
 
+
+
+
+
     }
+
 
     /**
      * RecyclerItem click event listener
@@ -215,8 +226,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
         this.menu = menu;
+
+        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -234,6 +247,14 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
             case R.id.swtich_list_menu:
 
                 switchView();
+                invalidateOptionsMenu();
+
+                return true;
+
+            case R.id.swtich_grid_menu:
+
+                switchView();
+                invalidateOptionsMenu();
 
                 return true;
 
@@ -253,6 +274,29 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem linearItem = menu.findItem(R.id.swtich_list_menu);
+        MenuItem gridItem = menu.findItem(R.id.swtich_grid_menu);
+
+
+        //check for the swtich menu button
+        //check whether the user is selected the linear view or the gird view
+        if (viewSwitchedFlag) {
+            gridItem.setVisible(true);
+            linearItem.setVisible(false);
+        } else {
+
+            gridItem.setVisible(false);
+            linearItem.setVisible(true);
+        }
+        setRecyclerViewLayout(viewSwitchedFlag);
+
+
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     private void sortNumeric(List<Food> foodList) {
@@ -281,14 +325,27 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         viewSwitchedFlag = !viewSwitchedFlag;
         adapter.viewSwitchedFlag = !adapter.viewSwitchedFlag;
 
-        menu.getItem(1).setIcon(ContextCompat.getDrawable(this, viewSwitchedFlag ? R.drawable.ic_grid_list : R.drawable.ic_linear_list));
+        //save user view choice
+        editor.putBoolean("selectedView", viewSwitchedFlag);
+        editor.apply();
 
-        recyclerView.setLayoutManager(viewSwitchedFlag ? new LinearLayoutManager(this) : new GridLayoutManager(this, 2));
+//        menu.getItem(1).setIcon(ContextCompat.
+//                getDrawable(this, viewSwitchedFlag ? R.drawable.ic_grid_list : R.drawable.ic_linear_list));
+
+        setRecyclerViewLayout(viewSwitchedFlag);
+        adapter.notifyDataSetChanged();
+
+    }
+
+    private void setRecyclerViewLayout(boolean viewSwitchedFlag) {
+        recyclerView.setLayoutManager(viewSwitchedFlag ? new LinearLayoutManager(this)
+                : new GridLayoutManager(this, 2));
+
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        adapter.notifyDataSetChanged();
     }
+
 
     @Override
     protected void onDestroy() {
@@ -315,6 +372,12 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
                 }
             }
         });
+    }
+
+    public void refreshToolBar(){
+        //refresh the toolbar after closig the fragment
+        initToolBar();
+
     }
 
     @Override

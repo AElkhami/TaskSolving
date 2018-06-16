@@ -28,10 +28,10 @@ public class PresenterImpl extends BasePresenter implements MainContract.Present
     @Override
     public boolean onRefreshData(Context context) {
 
-        if(mainView != null){
+        if (mainView != null) {
             mainView.showProgress();
         }
-        interactor.getFoodList(this,context);
+        interactor.getFoodList(this, context);
 
         return false;
 
@@ -39,14 +39,14 @@ public class PresenterImpl extends BasePresenter implements MainContract.Present
 
     @Override
     public void onRequestData(Context context) {
-        interactor.getFoodList(this,context);
+        interactor.getFoodList(this, context);
         mainView.showProgress();
     }
 
     @Override
     public void onFinished(List<Food> FoodList) {
 
-        if(mainView != null){
+        if (mainView != null) {
             mainView.setDataToRecyclerView(FoodList);
             mainView.hideProgress();
         }
@@ -56,7 +56,7 @@ public class PresenterImpl extends BasePresenter implements MainContract.Present
     @Override
     public void onFailure(Throwable throwable) {
 
-        if(mainView != null){
+        if (mainView != null) {
             mainView.onResponseFailure(throwable);
             mainView.hideProgress();
         }

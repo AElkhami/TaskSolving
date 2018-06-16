@@ -1,12 +1,12 @@
 package com.elkhamitech.tasksolving.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -44,14 +44,13 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
     private TextView lastUpdated;
     private SwipeRefreshLayout swipeLayout;
     private FoodAdapter adapter;
-    private Menu menu;
     private List<Food> foodList;
     private boolean viewSwitchedFlag = true;
     private FloatingActionButton takePhotoFab;
     private static final String SHARED_PREFERENCES = "MyPrefsFile";
     private SharedPreferences.Editor editor;
     private SharedPreferences prefs;
-    private DetailsFragment detailsFragment;;
+    private DetailsFragment detailsFragment;
 
 
     @Override
@@ -180,10 +179,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         recyclerView.setAdapter(adapter);
         this.foodList = foodList;
 
-
-
-
-
     }
 
 
@@ -213,7 +208,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         Bundle bundle = new Bundle();
         bundle.putString("meal_name", food.getName());
         bundle.putString("meal_desc", food.getDescription());
-        bundle.putInt("meal_id",food.getId());
+        bundle.putInt("meal_id", food.getId());
         bundle.putString("meal_price", food.getCost());
         // set MyFragment Arguments
         detailsFragment.setArguments(bundle);
@@ -226,7 +221,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
 
         getMenuInflater().inflate(R.menu.main_activity_menu, menu);
 
@@ -293,7 +287,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
             linearItem.setVisible(true);
         }
         setRecyclerViewLayout(viewSwitchedFlag);
-
 
 
         return super.onPrepareOptionsMenu(menu);
@@ -374,7 +367,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         });
     }
 
-    public void refreshToolBar(){
+    public void refreshToolBar() {
         //refresh the toolbar after closig the fragment
         initToolBar();
 
@@ -387,7 +380,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
             //fragment back pressed
             super.onBackPressed();
 
-        }else {
+        } else {
             //activity back pressed
             super.onBackPressed();
         }

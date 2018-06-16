@@ -9,7 +9,7 @@ public class FoodResponse {
     @ElementList(inline = true)
     private List<Food> foodList;
 
-    public FoodResponse(){
+    public FoodResponse() {
 
     }
 

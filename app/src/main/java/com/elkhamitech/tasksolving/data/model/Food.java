@@ -15,7 +15,7 @@ public class Food extends BaseController {
     private String name;
 
     @Element(name = "cost")
-    private String  cost;
+    private String cost;
 
     @Element(name = "description")
     private String description;

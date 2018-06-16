@@ -11,11 +11,13 @@ public interface MainContract {
 
     /**
      * Call when user interact with the view and other when view OnDestroy()
-     * */
+     */
 
-    interface Presenter{
+    interface Presenter {
         void onDestroy();
+
         boolean onRefreshData(Context context);
+
         void onRequestData(Context context);
 
     }
@@ -25,7 +27,7 @@ public interface MainContract {
      * while the setDataToRecyclerView and onResponseFailure is fetched from the InteractorImpl class
      **/
 
-    interface MainView extends BasePresenterListener{
+    interface MainView extends BasePresenterListener {
 
         @Override
         void showProgress();
@@ -35,6 +37,7 @@ public interface MainContract {
 
 
         void setDataToRecyclerView(List<Food> foodList);
+
         void onResponseFailure(Throwable throwable);
     }
 
@@ -42,10 +45,11 @@ public interface MainContract {
      * Interactors are classes built for fetching data from your database, web services, or any other data source.
      **/
 
-    interface Interactor{
+    interface Interactor {
 
         interface OnFinishedListener {
             void onFinished(List<Food> FoodList);
+
             void onFailure(Throwable throwable);
         }
 

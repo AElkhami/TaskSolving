@@ -19,7 +19,8 @@
             android:id="@+id/photoImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="center"/>
+            android:scaleType="center"
+            android:contentDescription="@string/your_image" />
 
     </LinearLayout>
 

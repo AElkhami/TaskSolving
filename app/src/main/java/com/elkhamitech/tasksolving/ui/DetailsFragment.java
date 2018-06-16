@@ -30,7 +30,6 @@ import com.etisalat.sampletask.R;
 public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffsetChangedListener, OnBackPressedListener {
 
 
-    private boolean isPressed = true;
     private CardView cvSwipeDismiss;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView mealDesc;
@@ -76,7 +75,7 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
             collapsingToolbarLayout.setTitleEnabled(true);
             collapsingToolbarLayout.setTitle(getArguments().getString("meal_name"));
             mealDesc.setText(getArguments().getString("meal_desc"));
-            meanPrice.setText(String.format("Price %s $",getArguments().getString("meal_price")));
+            meanPrice.setText(String.format("Price %s $", getArguments().getString("meal_price")));
             int mealId = getArguments().getInt("meal_id_desc");
         }
     }
@@ -104,11 +103,11 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
         //<V> - The View type that this Behavior operates on
         SwipeDismissBehavior<CardView> swipeDismissBehavior = new SwipeDismissBehavior();
 
-        swipeDismissBehavior.setSwipeDirection(SwipeDismissBehavior.SWIPE_DIRECTION_START_TO_END );
+        swipeDismissBehavior.setSwipeDirection(SwipeDismissBehavior.SWIPE_DIRECTION_START_TO_END);
 
         CoordinatorLayout.LayoutParams layoutParams =
                 (CoordinatorLayout.LayoutParams) cvSwipeDismiss.getLayoutParams();
-        layoutParams.setMargins(10,10,10,10);
+        layoutParams.setMargins(10, 10, 10, 10);
         layoutParams.setBehavior(swipeDismissBehavior);
 
     }
@@ -121,8 +120,7 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if (verticalOffset == 0) {
             // Fully expanded
-        }
-        else {
+        } else {
             // Not fully expanded or collapsed
         }
     }
@@ -136,7 +134,7 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             //on up button pressed
             case android.R.id.home:
                 if (getFragmentManager() != null) {
@@ -146,7 +144,7 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
                             .remove(this)
                             .commit();
                     //refresh the host activity's toolBar when closing the fragment
-                    ((MainActivity)getActivity()).refreshToolBar();
+                    ((MainActivity) getActivity()).refreshToolBar();
                 }
                 return true;
 
@@ -172,7 +170,7 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
 
     @Override
     public boolean onBackPressed() {
-        if (isPressed) {
+
             if (getFragmentManager() != null) {
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down)
@@ -180,11 +178,8 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
                         .commit();
 
                 //refresh the host activity's toolBar when closing the fragment
-                ((MainActivity)getActivity()).refreshToolBar();
+                ((MainActivity) getActivity()).refreshToolBar();
             }
             return true;
-        } else {
-            return false;
-        }
     }
 }

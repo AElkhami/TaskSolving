@@ -1,6 +1,7 @@
 package com.elkhamitech.tasksolving.data;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.elkhamitech.tasksolving.presenter.Utils;
 
@@ -19,14 +20,15 @@ public class RetrofitService {
     private static Retrofit retrofit;
     private static final String BASE_URL = "https://api.androidhive.info/pizza/?format=xml";
 
-    public static OkHttpClient getOkHttpClient(final Context context){
+    private static OkHttpClient getOkHttpClient(final Context context) {
         //implementing cache logic
         OkHttpClient client = new OkHttpClient
                 .Builder()
                 //cache size
                 .cache(new Cache(context.getCacheDir(), 10 * 1024 * 1024)) // 10 MB
                 .addInterceptor(new Interceptor() {
-                    @Override public Response intercept(Chain chain) throws IOException {
+                    @Override
+                    public Response intercept(@NonNull Chain chain) throws IOException {
                         Request request = chain.request();
                         if (Utils.isNetworkAvailable(context)) {
                             // read from cache for 1 minute
@@ -43,10 +45,10 @@ public class RetrofitService {
         return client;
     }
 
-    public static Retrofit getRetrofitInstance(final Context context){
+    public static Retrofit getRetrofitInstance(final Context context) {
 
         //initialising retrofit
-        if(retrofit == null){
+        if (retrofit == null) {
             retrofit = new retrofit2.Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(getOkHttpClient(context))
@@ -56,7 +58,6 @@ public class RetrofitService {
 
         return retrofit;
     }
-
 
 
 }

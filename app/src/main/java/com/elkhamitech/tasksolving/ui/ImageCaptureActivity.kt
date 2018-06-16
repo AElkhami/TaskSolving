@@ -1,5 +1,6 @@
 package com.elkhamitech.tasksolving.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_image_capture.*
 
 class ImageCaptureActivity : AppCompatActivity() {
 
-    val cameraRequestCode = 0
+    private val cameraRequestCode = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,18 +29,19 @@ class ImageCaptureActivity : AppCompatActivity() {
         addNewImage.setOnClickListener {
             val goToCamera = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             if (goToCamera.resolveActivity(packageManager) != null) {
-                startActivityForResult(goToCamera,cameraRequestCode)
+                startActivityForResult(goToCamera, cameraRequestCode)
 
             }
         }
     }
 
+    @SuppressLint("ShowToast")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        when(requestCode){
+        when (requestCode) {
             cameraRequestCode -> {
-                if(resultCode == Activity.RESULT_OK && data != null){
+                if (resultCode == Activity.RESULT_OK && data != null) {
 
                     Glide.with(this)
                             .load(data.extras.get("data") as Bitmap)
@@ -49,7 +51,7 @@ class ImageCaptureActivity : AppCompatActivity() {
                 }
             }
             else -> {
-                Toast.makeText(this,"Error getting the image.", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "Error getting the image.", Toast.LENGTH_SHORT)
             }
         }
     }

@@ -16,4 +16,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="linear_view">Linear View</string>
     <string name="grid_view">Grid View</string>
+    <string name="food_image">Food Image</string>
+    <string name="meal_price">Meal Price</string>
+    <string name="meal_desc">Meal Desc</string>
+    <string name="your_image">Your image is here.</string>
 </resources>

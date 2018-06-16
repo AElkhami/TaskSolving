@@ -17,10 +17,10 @@ public class InteractorImpl implements MainContract.Interactor {
     @Override
     public void getFoodList(final OnFinishedListener onFinishedListener, Context context) {
 
-        /** Create handle for the RetrofitService interface*/
+        //Create handle for the RetrofitService interface*/
         FoodAPI foodAPI = RetrofitService.getRetrofitInstance(context).create(FoodAPI.class);
 
-        /** Call the method with parameter in the interface to get the data*/
+        //Call the method with parameter in the interface to get the data*/
         Call<FoodResponse> call = foodAPI.getFoodData();
 
         call.enqueue(new Callback<FoodResponse>() {

@@ -1,4 +1,4 @@
-package com.elkhamitech.tasksolving.ui;
+package com.elkhamitech.tasksolving.presenter;
 
 import com.elkhamitech.tasksolving.data.model.Food;
 

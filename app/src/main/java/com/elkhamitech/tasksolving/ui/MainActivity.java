@@ -1,19 +1,16 @@
 package com.elkhamitech.tasksolving.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,18 +19,17 @@ import android.widget.TextView;
 import com.elkhamitech.tasksolving.bases.BaseActivity;
 import com.elkhamitech.tasksolving.bases.BasePresenter;
 import com.elkhamitech.tasksolving.bases.BasePresenterListener;
+import com.elkhamitech.tasksolving.data.SharedPreferencesHandler;
 import com.elkhamitech.tasksolving.data.model.Food;
-import com.elkhamitech.tasksolving.presenter.InteractorImpl;
 import com.elkhamitech.tasksolving.presenter.MainContract;
+import com.elkhamitech.tasksolving.presenter.OnBackPressedListener;
 import com.elkhamitech.tasksolving.presenter.PresenterImpl;
+import com.elkhamitech.tasksolving.presenter.RecyclerItemClickListener;
+import com.elkhamitech.tasksolving.presenter.RestInteractorImpl;
 import com.elkhamitech.tasksolving.presenter.Utils;
+import com.elkhamitech.tasksolving.ui.adapter.FoodAdapter;
 import com.etisalat.sampletask.R;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements MainContract.MainView, BasePresenterListener {
@@ -47,10 +43,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
     private List<Food> foodList;
     private boolean viewSwitchedFlag = true;
     private FloatingActionButton takePhotoFab;
-    private static final String SHARED_PREFERENCES = "MyPrefsFile";
-    private SharedPreferences.Editor editor;
-    private SharedPreferences prefs;
-    private DetailsFragment detailsFragment;
+    private SharedPreferencesHandler preferencesHandler;
 
 
     @Override
@@ -61,7 +54,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         initToolBar();
         initUI();
 
-        presenter = new PresenterImpl(MainActivity.this, MainActivity.this, new InteractorImpl());
+        presenter = new PresenterImpl(MainActivity.this, MainActivity.this, new RestInteractorImpl());
         presenter.onRequestData(this);
 
         setRecyclerViewScrollListener();
@@ -70,13 +63,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
 
     }
 
-    /*
-     * Initialise UI Components
-     */
+    // Initialise UI Components
     private void initUI() {
 
-        editor = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
-        prefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
+        preferencesHandler = new SharedPreferencesHandler(this);
 
         constraintLayout = findViewById(R.id.constraint_layout);
         lastUpdated = findViewById(R.id.time_stamp_textView);
@@ -88,7 +78,7 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        viewSwitchedFlag = prefs.getBoolean("selectedView", true);
+        viewSwitchedFlag = preferencesHandler.getViewPreference();
     }
 
     private void initToolBar() {
@@ -101,36 +91,23 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
     }
 
     private void setLastUpdated() {
-        String currentDateTimeString;
-        Calendar mDate = Calendar.getInstance();
 
         //check for the network
         if (Utils.isNetworkAvailable(MainActivity.this)) {
-            //compare if the last updated is today.
-            if (DateUtils.isToday(mDate.getTimeInMillis())) {
 
-                currentDateTimeString = DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date());
-                lastUpdated.setText("last updated today, " + currentDateTimeString);
+            presenter.setLastUpdate(lastUpdated, MainActivity.this);
 
-            } else {
+            String lastUpdText = lastUpdated.getText().toString();
 
-                currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-                lastUpdated.setText(currentDateTimeString);
-            }
+            preferencesHandler.setLastUpdPreference(lastUpdText);
 
-            editor.putString("lastUpd", lastUpdated.getText().toString());
-            editor.apply();
         } else {
-
-            String restoredText = prefs.getString("lastUpd", null);
+            String restoredText = preferencesHandler.getLastUpdPreference();
             if (restoredText != null) {
-                restoredText = prefs.getString("lastUpd", "");
+                restoredText = preferencesHandler.getLastUpdPreference();
                 lastUpdated.setText(restoredText);
             }
-
         }
-
-
     }
 
     private void refreshList() {
@@ -144,13 +121,60 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
             }
         });
 
-        swipeLayout.setColorSchemeColors(
-                getResources().getColor(android.R.color.holo_blue_bright),
-                getResources().getColor(android.R.color.holo_green_light),
-                getResources().getColor(android.R.color.holo_orange_light),
-                getResources().getColor(android.R.color.holo_red_light));
+        swipeLayout.setColorSchemeColors(getResources().getColor(android.R.color.holo_blue_bright));
     }
 
+    private void switchView() {
+
+        viewSwitchedFlag = !viewSwitchedFlag;
+        adapter.viewSwitchedFlag = !adapter.viewSwitchedFlag;
+
+        //save user view choice
+        preferencesHandler.setViewPreference(viewSwitchedFlag);
+
+        presenter.switchLayoutView(viewSwitchedFlag, adapter, recyclerView, this);
+
+        adapter.notifyDataSetChanged();
+    }
+
+    public void goToCapture(View view) {
+        Intent goTo = new Intent(MainActivity.this, ImageCaptureActivity.class);
+        startActivity(goTo);
+    }
+
+    private void setRecyclerViewScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                //to hide the action button when scrolling down
+                if (dy > 0 && takePhotoFab.getVisibility() == View.VISIBLE) {
+                    takePhotoFab.hide();
+                } else if (dy < 0 && takePhotoFab.getVisibility() != View.VISIBLE) {
+                    takePhotoFab.show();
+                }
+            }
+        });
+    }
+
+    public void refreshToolBar() {
+        //refresh the toolbar after closig the fragment
+        initToolBar();
+    }
+
+    // RecyclerItem click event listener
+    private RecyclerItemClickListener recyclerItemClickListener = new RecyclerItemClickListener() {
+        @Override
+        public void onItemClick(Food food) {
+
+            DetailsFragment detailsFragment = new DetailsFragment();
+            FragmentManager manager = getSupportFragmentManager();
+
+            presenter.replaceFragment(detailsFragment, manager);
+            presenter.sendFoodData(food, detailsFragment);
+        }
+    };
 
     @Override
     protected BasePresenter setupPresenter() {
@@ -159,7 +183,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
-
     }
 
     @Override
@@ -182,38 +205,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
     }
 
 
-    /**
-     * RecyclerItem click event listener
-     */
-    private RecyclerItemClickListener recyclerItemClickListener = new RecyclerItemClickListener() {
-        @Override
-        public void onItemClick(Food food) {
-
-            detailsFragment = new DetailsFragment();
-
-            android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction transaction = manager.beginTransaction();
-
-            transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down);
-            transaction.replace(R.id.fragment_container, detailsFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-
-            sendDataToFragment(food);
-
-        }
-    };
-
-    private void sendDataToFragment(Food food) {
-        Bundle bundle = new Bundle();
-        bundle.putString("meal_name", food.getName());
-        bundle.putString("meal_desc", food.getDescription());
-        bundle.putInt("meal_id", food.getId());
-        bundle.putString("meal_price", food.getCost());
-        // set MyFragment Arguments
-        detailsFragment.setArguments(bundle);
-    }
-
     @Override
     public void onResponseFailure(Throwable throwable) {
         showSnackbar(throwable.getMessage(), constraintLayout);
@@ -234,7 +225,6 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
             case R.id.refresh_list_menu:
 
                 presenter.onRefreshData(MainActivity.this);
-
                 setLastUpdated();
 
                 return true;
@@ -254,14 +244,14 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
 
             case R.id.sort_alf_list_menu:
 
-                sortAlfa(foodList);
+                presenter.sortAlfa(foodList);
                 adapter.notifyDataSetChanged();
 
                 return true;
 
             case R.id.sort_num_list_menu:
 
-                sortNumeric(foodList);
+                presenter.sortNumeric(foodList);
                 adapter.notifyDataSetChanged();
 
                 return true;
@@ -286,91 +276,10 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
             gridItem.setVisible(false);
             linearItem.setVisible(true);
         }
-        setRecyclerViewLayout(viewSwitchedFlag);
 
+        presenter.switchLayoutView(viewSwitchedFlag, adapter, recyclerView, this);
 
         return super.onPrepareOptionsMenu(menu);
-    }
-
-    private void sortNumeric(List<Food> foodList) {
-        Collections.sort(foodList, new Comparator<Food>() {
-            @Override
-            public int compare(Food food, Food t1) {
-                return food.getCost().compareTo(t1.getCost());
-
-            }
-        });
-    }
-
-
-    private void sortAlfa(List<Food> foodList) {
-        Collections.sort(foodList, new Comparator<Food>() {
-            @Override
-            public int compare(Food food, Food t1) {
-                return food.getName().compareTo(t1.getName());
-            }
-        });
-    }
-
-
-    private void switchView() {
-
-        viewSwitchedFlag = !viewSwitchedFlag;
-        adapter.viewSwitchedFlag = !adapter.viewSwitchedFlag;
-
-        //save user view choice
-        editor.putBoolean("selectedView", viewSwitchedFlag);
-        editor.apply();
-
-//        menu.getItem(1).setIcon(ContextCompat.
-//                getDrawable(this, viewSwitchedFlag ? R.drawable.ic_grid_list : R.drawable.ic_linear_list));
-
-        setRecyclerViewLayout(viewSwitchedFlag);
-        adapter.notifyDataSetChanged();
-
-    }
-
-    private void setRecyclerViewLayout(boolean viewSwitchedFlag) {
-        recyclerView.setLayoutManager(viewSwitchedFlag ? new LinearLayoutManager(this)
-                : new GridLayoutManager(this, 2));
-
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
-
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.onDestroy();
-    }
-
-    public void goToCapture(View view) {
-        Intent goTo = new Intent(MainActivity.this, ImageCaptureActivity.class);
-        startActivity(goTo);
-    }
-
-    private void setRecyclerViewScrollListener() {
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                if (dy > 0 && takePhotoFab.getVisibility() == View.VISIBLE) {
-                    takePhotoFab.hide();
-                } else if (dy < 0 && takePhotoFab.getVisibility() != View.VISIBLE) {
-                    takePhotoFab.show();
-
-                }
-            }
-        });
-    }
-
-    public void refreshToolBar() {
-        //refresh the toolbar after closig the fragment
-        initToolBar();
-
     }
 
     @Override
@@ -379,11 +288,16 @@ public class MainActivity extends BaseActivity implements MainContract.MainView,
         if (!(fragment instanceof OnBackPressedListener) || !((OnBackPressedListener) fragment).onBackPressed()) {
             //fragment back pressed
             super.onBackPressed();
-
         } else {
             //activity back pressed
             super.onBackPressed();
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 }

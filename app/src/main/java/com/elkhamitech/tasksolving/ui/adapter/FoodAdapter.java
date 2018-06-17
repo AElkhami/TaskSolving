@@ -1,4 +1,4 @@
-package com.elkhamitech.tasksolving.ui;
+package com.elkhamitech.tasksolving.ui.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,6 +16,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.elkhamitech.tasksolving.bases.BaseControllerListener;
 import com.elkhamitech.tasksolving.data.model.Food;
+import com.elkhamitech.tasksolving.presenter.RecyclerItemClickListener;
+import com.elkhamitech.tasksolving.ui.DetailsFragment;
 import com.etisalat.sampletask.R;
 
 import java.util.List;
@@ -27,7 +29,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> im
     public boolean viewSwitchedFlag;
     private RecyclerItemClickListener recyclerItemClickListener;
 
-     FoodAdapter(Context context, List<Food> foodList, boolean viewSwitchedFlag, RecyclerItemClickListener recyclerItemClickListener) {
+     public FoodAdapter(Context context, List<Food> foodList, boolean viewSwitchedFlag, RecyclerItemClickListener recyclerItemClickListener) {
         this.context = context;
         this.foodList = foodList;
         this.viewSwitchedFlag = viewSwitchedFlag;

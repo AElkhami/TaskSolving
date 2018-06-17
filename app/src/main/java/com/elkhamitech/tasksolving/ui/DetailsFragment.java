@@ -5,11 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.SwipeDismissBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,19 +19,22 @@ import android.widget.TextView;
 
 import com.elkhamitech.tasksolving.bases.BaseFragment;
 import com.elkhamitech.tasksolving.bases.BasePresenter;
+import com.elkhamitech.tasksolving.bases.BasePresenterListener;
+import com.elkhamitech.tasksolving.presenter.MainContract;
+import com.elkhamitech.tasksolving.presenter.OnBackPressedListener;
+import com.elkhamitech.tasksolving.presenter.PresenterImpl;
 import com.etisalat.sampletask.R;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffsetChangedListener, OnBackPressedListener {
+public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffsetChangedListener, OnBackPressedListener, BasePresenterListener {
 
-
-    private CardView cvSwipeDismiss;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView mealDesc;
     private TextView meanPrice;
     private ImageView mealImage;
+    private MainContract.Presenter presenter;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -45,11 +45,12 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View view = inflater.inflate(R.layout.fragment_details, container, false);
 
+        presenter = new PresenterImpl(this);
+
         initUI(view);
-        getDataFromActivity();
+        presenter.receiveFoodData(collapsingToolbarLayout, mealDesc, meanPrice, this);
 
         return view;
     }
@@ -63,33 +64,15 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
         getActivity().invalidateOptionsMenu();
         setHasOptionsMenu(true);
 
-
         collapsingToolbarLayout = view.findViewById(R.id.collapsingToolbar);
         mealDesc = view.findViewById(R.id.meal_dec_textView);
         meanPrice = view.findViewById(R.id.meal_price_textView);
         mealImage = view.findViewById(R.id.toolbarImage);
     }
 
-    private void getDataFromActivity() {
-        if (getArguments() != null) {
-            collapsingToolbarLayout.setTitleEnabled(true);
-            collapsingToolbarLayout.setTitle(getArguments().getString("meal_name"));
-            mealDesc.setText(getArguments().getString("meal_desc"));
-            meanPrice.setText(String.format("Price %s $", getArguments().getString("meal_price")));
-            int mealId = getArguments().getInt("meal_id_desc");
-        }
-    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Activity activity = getActivity();
-//
-//        Toolbar toolbar = activity.findViewById(R.id.details_toolbar);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            activity.setActionBar(toolbar);
-////            activity.getActionBar().setDisplayShowHomeEnabled(true);
-//        }
-
 
     }
 
@@ -99,22 +82,6 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
         return null;
     }
 
-    private void swipeDismiss() {
-        //<V> - The View type that this Behavior operates on
-        SwipeDismissBehavior<CardView> swipeDismissBehavior = new SwipeDismissBehavior();
-
-        swipeDismissBehavior.setSwipeDirection(SwipeDismissBehavior.SWIPE_DIRECTION_START_TO_END);
-
-        CoordinatorLayout.LayoutParams layoutParams =
-                (CoordinatorLayout.LayoutParams) cvSwipeDismiss.getLayoutParams();
-        layoutParams.setMargins(10, 10, 10, 10);
-        layoutParams.setBehavior(swipeDismissBehavior);
-
-    }
-
-    private void setUpViews(View views) {
-        cvSwipeDismiss = views.findViewById(R.id.main_content);
-    }
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -137,15 +104,9 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
         switch (item.getItemId()) {
             //on up button pressed
             case android.R.id.home:
-                if (getFragmentManager() != null) {
-//                    getFragmentManager().popBackStack();
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down)
-                            .remove(this)
-                            .commit();
-                    //refresh the host activity's toolBar when closing the fragment
-                    ((MainActivity) getActivity()).refreshToolBar();
-                }
+
+                presenter.onBackButtonclicked(this);
+
                 return true;
 
         }
@@ -171,15 +132,8 @@ public class DetailsFragment extends BaseFragment implements AppBarLayout.OnOffs
     @Override
     public boolean onBackPressed() {
 
-            if (getFragmentManager() != null) {
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down)
-                        .remove(this)
-                        .commit();
+        presenter.onBackButtonclicked(this);
 
-                //refresh the host activity's toolBar when closing the fragment
-                ((MainActivity) getActivity()).refreshToolBar();
-            }
-            return true;
+        return true;
     }
 }
